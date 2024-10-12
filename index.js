@@ -1,8 +1,11 @@
-const express = require('express');
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const Razorpay = require("razorpay")
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors'
+import Razorpay from 'razorpay';
+import router from './routers/paymentRoute.js';
+import { config } from 'dotenv';
 
+config();
 const app = express();
 const port = 5000;
 
@@ -10,14 +13,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
+app.use("/api", router);
 app.get('/', (req, res) => {
     res.send("Hello World!");
 })
 
 app.post('/orders', async(req, res) => {
     const razorpay = new Razorpay({
-        key_id: "rzp_test_YAYB5wPUVIc2av",
-        key_secret: "tmkpxXpipvDkCv0YQzuLfClk"
+        key_id: "rzp_live_w1F1WlXsmUUQMN",
+        key_secret: "0lYodF8TSI555KvCZgT3nnbs"
     })
 
     const options = {
@@ -29,12 +33,17 @@ app.post('/orders', async(req, res) => {
 
     try {
         const response = await razorpay.orders.create(options)
+        if(response.id){
+            res.json({
+                order_id: response.id,
+                currency: response.currency,
+                amount: response.amount
+            })    
+        }
+        else{
+            res.json({message:"order Creation failed"});
+        }
 
-        res.json({
-            order_id: response.id,
-            currency: response.currency,
-            amount: response.amount
-        })
     } catch (error) {
         res.status(500).send("Internal server error")
     }
@@ -42,14 +51,17 @@ app.post('/orders', async(req, res) => {
 
 app.get("/payment/:paymentId", async(req, res) => {
     const {paymentId} = req.params;
+    // console.log("worked", paymentId);
 
     const razorpay = new Razorpay({
         key_id: "rzp_test_YAYB5wPUVIc2av",
         key_secret: "tmkpxXpipvDkCv0YQzuLfClk"
     })
+    console.log(razorpay)
     
     try {
-        const payment = await razorpay.payments.fetch(paymentId)
+        const payment = await razorpay.orders.fetchPayments(paymentId)
+        console.log(payment)
 
         if (!payment){
             return res.status(500).json("Error at razorpay loading")
