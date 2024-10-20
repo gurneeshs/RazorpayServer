@@ -20,8 +20,8 @@ app.get('/', (req, res) => {
 
 app.post('/orders', async(req, res) => {
     const razorpay = new Razorpay({
-        key_id: "rzp_live_w1F1WlXsmUUQMN",
-        key_secret: "0lYodF8TSI555KvCZgT3nnbs"
+        key_id: process.env.API_KEY,
+        key_secret: process.env.API_SECRET
     })
 
     const options = {
@@ -54,13 +54,13 @@ app.get("/payment/:paymentId", async(req, res) => {
     // console.log("worked", paymentId);
 
     const razorpay = new Razorpay({
-        key_id: "rzp_test_YAYB5wPUVIc2av",
-        key_secret: "tmkpxXpipvDkCv0YQzuLfClk"
+        key_id: "rzp_live_w1F1WlXsmUUQMN",
+        key_secret: "0lYodF8TSI555KvCZgT3nnbs"
     })
     console.log(razorpay)
     
     try {
-        const payment = await razorpay.orders.fetchPayments(paymentId)
+        const payment = await razorpay.payments.fetch(paymentId)
         console.log(payment)
 
         if (!payment){
