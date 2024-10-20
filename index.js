@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
     origin: 'http://localhost:5173', // Specify your frontend origin
     methods: 'GET,POST,PUT,DELETE', // Specify the allowed methods
-    credentials:true,
+    credentials:false,
     allowedHeaders: 'Content-Type, Authorization', // Specify allowed headers
 }));
 
