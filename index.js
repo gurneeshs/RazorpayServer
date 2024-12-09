@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cors());
 app.use(cors({
-    origin: 'https://jovial-dusk-7af451.netlify.app', // Specify your frontend origin
+    origin: 'http://localhost:5173', // Specify your frontend origin
     methods: 'GET,POST,PUT,DELETE', // Specify the allowed methods
     credentials:false,
     allowedHeaders: 'Content-Type, Authorization', // Specify allowed headers
